@@ -51,12 +51,11 @@ async function handleSubmit(e) {
   // your `return_url`. For some payment methods like iDEAL, your customer will
   // be redirected to an intermediate site first to authorize the payment, then
   // redirected to the `return_url`.
-  alert(JSON.stringify(error));
   if (error.type === "card_error" || error.type === "validation_error") {
+      alert(JSON.stringify(error));
     showMessage(error.message);
   } else {
     alert(JSON.stringify(error));
-    console.log("📢[app.js:58]: error: ", error);
     showMessage("An unexpected error occurred.");
   }
 
