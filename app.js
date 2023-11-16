@@ -54,6 +54,7 @@ async function handleSubmit(e) {
   if (error.type === "card_error" || error.type === "validation_error") {
     showMessage(error.message);
   } else {
+    alert(JSON.stringify(error));
     console.log("📢[app.js:58]: error: ", error);
     showMessage("An unexpected error occurred.");
   }
