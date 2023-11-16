@@ -1,0 +1,14 @@
+{
+    "name": "wechat-pay",
+    "version": "1.0.0",
+    "description": "Wechat Pay with Stripe",
+    "main": "index.html",
+    "scripts": {
+      "start": "serve",
+      "build": "echo This is a static template, there is no bundler or bundling involved!"
+    },
+    "license": "MIT",
+    "devDependencies": {
+      "serve": "^11.2.0"
+    }
+  }
