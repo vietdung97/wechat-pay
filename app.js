@@ -40,11 +40,11 @@ async function handleSubmit(e) {
 
   const { error } = await stripe.confirmPayment({
     elements,
-    // confirmParams: {
-    //   // Make sure to change this to your payment completion page
-    //   return_url: "http://localhost:3000",
-    //   receipt_email: "abc@gmail.com",
-    // },
+    confirmParams: {
+     // Make sure to change this to your payment completion page
+      return_url: "https://wechat-pay.vercel.app/",
+      receipt_email: "abc@gmail.com",
+    },
   });
 
   // This point will only be reached if there is an immediate error when
