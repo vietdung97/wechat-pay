@@ -41,7 +41,7 @@ async function handleSubmit(e) {
   const { error } = await stripe.confirmPayment({
     elements,
     confirmParams: {
-     // Make sure to change this to your payment completion page
+      // Make sure to change this to your payment completion page
       return_url: "https://wechat-pay.vercel.app/",
       receipt_email: "abc@gmail.com",
     },
@@ -51,12 +51,15 @@ async function handleSubmit(e) {
   // your `return_url`. For some payment methods like iDEAL, your customer will
   // be redirected to an intermediate site first to authorize the payment, then
   // redirected to the `return_url`.
-  if (error.type === "card_error" || error.type === "validation_error") {
-      alert(JSON.stringify(error));
+  if (error.type === "validation_error") {
     showMessage(error.message);
-  } else {
-    alert(JSON.stringify(error));
-    showMessage("An unexpected error occurred.");
+    return;
+  }
+  if (error.type) {
+    if (window.ReactNativeWebView) {
+      window.ReactNativeWebView?.postMessage(JSON.stringify(error));
+    }
+    showMessage(error.message);
   }
 
   setLoading(false);
