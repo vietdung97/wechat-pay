@@ -5,9 +5,6 @@ var key =
   "pk_test_51NzzmQLk2dEcCezEqChha442FK2zSJLQhicKOMYjZRzsKrZaHLerVU7XY4dlrqrrl9qdezwlggZZu10eXv2r7oqo001Jex9Ybe";
 const stripe = Stripe(key);
 
-// The items the customer wants to buy
-const items = [{ id: "xl-tshirt" }];
-
 let elements;
 
 initialize();
@@ -20,14 +17,30 @@ document
 // Fetches a payment intent and captures the client secret
 async function initialize() {
   const qs = new URLSearchParams(window.location.search);
-  const clientSecret = qs.get("clientSecret") || null;
+  const clientSecret = qs.get("clientSecret");
+  const { paymentIntent } = await stripe.retrievePaymentIntent(clientSecret);
+  document.querySelector("#button-text").innerText = `Pay now (${getCurrencySymbol(paymentIntent.currency.toUpperCase())}${(paymentIntent.amount / 100).toFixed(2)})`
+
   const appearance = {
-    theme: "stripe",
+    theme: 'bubblegum',
+    labels: 'floating'
   };
   elements = stripe.elements({ appearance, clientSecret });
 
   const paymentElementOptions = {
-    layout: "tabs",
+    layout: "accordion",
+    wallets: {
+      applePay: 'auto',
+      googlePay: 'auto',
+    },
+    terms: {
+      card: 'always',
+      applePay: 'always',
+      googlePay: 'always',
+    },
+    defaultCollapsed: false,
+    radios: false,
+    spacedAccordionItems: true
   };
 
   const paymentElement = elements.create("payment", paymentElementOptions);
@@ -76,7 +89,6 @@ async function checkStatus() {
   }
 
   const { paymentIntent } = await stripe.retrievePaymentIntent(clientSecret);
-
   switch (paymentIntent.status) {
     case "succeeded":
       showMessage("Payment succeeded!");
@@ -118,5 +130,46 @@ function setLoading(isLoading) {
     document.querySelector("#submit").disabled = false;
     document.querySelector("#spinner").classList.add("hidden");
     document.querySelector("#button-text").classList.remove("hidden");
+  }
+}
+
+function getCurrencySymbol(currencyCode) {
+  switch (currencyCode.toUpperCase()) {
+    case 'CNY':
+      return '¥'; // yuan
+    case 'USD':
+      return '$'; // dollar
+    case 'EUR':
+      return '€'; // euro
+    case 'GBP':
+      return '£'; // pound sterling
+    case 'JPY':
+      return '¥'; // yen
+    case 'CHF':
+      return 'SFr'; // Swiss franc
+    case 'CAD':
+      return '$'; // Canadian dollar
+    case 'AUD':
+      return '$'; // Australian dollar
+    case 'NZD':
+      return '$'; // New Zealand dollar
+    case 'INR':
+      return '₹'; // Indian rupee
+    case 'RUB':
+      return '₽'; // Russian ruble
+    case 'KRW':
+      return '₩'; // South Korean won
+    case 'TRY':
+      return '₺'; // Turkish lira
+    case 'THB':
+      return '฿'; // Thai baht
+    case 'SGD':
+      return '$'; // Singapore dollar
+    case 'HKD':
+      return '$'; // Hong Kong dollar
+    case 'MYR':
+      return 'RM'; // Malaysian ringgit
+    default:
+      return currencyCode.toUpperCase(); // if no match, return the currency code itself
   }
 }
