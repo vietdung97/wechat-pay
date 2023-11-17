@@ -3,7 +3,9 @@
 // Sign in to see your own test API key embedded in code samples.
 var key =
   "pk_test_51NzzmQLk2dEcCezEqChha442FK2zSJLQhicKOMYjZRzsKrZaHLerVU7XY4dlrqrrl9qdezwlggZZu10eXv2r7oqo001Jex9Ybe";
-const stripe = Stripe(key);
+const stripe = Stripe(key, {
+  apiVersion: "2023-08-16"
+});
 
 let elements;
 
@@ -26,6 +28,7 @@ async function initialize() {
     labels: 'floating'
   };
   elements = stripe.elements({ appearance, clientSecret });
+
 
   const paymentElementOptions = {
     layout: "accordion",
