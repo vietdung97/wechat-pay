@@ -147,12 +147,12 @@ function getCurrencySymbol(currencyCode) {
       return '¥'; // yen
     case 'CHF':
       return 'SFr'; // Swiss franc
-    case 'CAD':
-      return '$'; // Canadian dollar
-    case 'AUD':
-      return '$'; // Australian dollar
-    case 'NZD':
-      return '$'; // New Zealand dollar
+    // case 'CAD':
+    //   return '$'; // Canadian dollar
+    // case 'AUD':
+    //   return '$'; // Australian dollar
+    // case 'NZD':
+    //   return '$'; // New Zealand dollar
     case 'INR':
       return '₹'; // Indian rupee
     case 'RUB':
@@ -163,10 +163,10 @@ function getCurrencySymbol(currencyCode) {
       return '₺'; // Turkish lira
     case 'THB':
       return '฿'; // Thai baht
-    case 'SGD':
-      return '$'; // Singapore dollar
+    // case 'SGD':
+    //   return '$'; // Singapore dollar
     case 'HKD':
-      return '$'; // Hong Kong dollar
+      return 'HK$'; // Hong Kong dollar
     case 'MYR':
       return 'RM'; // Malaysian ringgit
     default:
