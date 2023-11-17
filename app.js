@@ -29,14 +29,8 @@ async function initialize() {
 
   const paymentElementOptions = {
     layout: "accordion",
-    wallets: {
-      applePay: 'auto',
-      googlePay: 'auto',
-    },
     terms: {
       card: 'always',
-      applePay: 'always',
-      googlePay: 'always',
     },
     defaultCollapsed: false,
     radios: false,
