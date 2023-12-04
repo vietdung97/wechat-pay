@@ -108,6 +108,7 @@ async function checkStatus() {
   const { paymentIntent } = await stripe.retrievePaymentIntent(clientSecret);
   switch (paymentIntent.status) {
     case "succeeded":
+      sendDataToApp({ status: "succeeded", message: "Payment succeeded!" });
       showMessage("Payment succeeded!");
       break;
     case "processing":
