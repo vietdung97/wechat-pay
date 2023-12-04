@@ -19,8 +19,11 @@ document
 // Fetches a payment intent and captures the client secret
 async function initialize() {
   const qs = new URLSearchParams(window.location.search);
-  const clientSecret =
-    qs.get("clientSecret") || qs.get("payment_intent_client_secret");
+  const clientSecret = qs.get("clientSecret");
+  if (!clientSecret) {
+    document.querySelector("#submit").classList.add("hidden");
+    return;
+  }
   const { paymentIntent } = await stripe.retrievePaymentIntent(clientSecret);
   let btnText = `Pay now (${getCurrencySymbol(
     paymentIntent.currency.toUpperCase()
@@ -30,8 +33,9 @@ async function initialize() {
     btnText = "Done";
   }
   document.querySelector("#button-text").innerText = btnText;
+
   if (paymentIntent.status === "succeeded") {
-   return;
+    return;
   }
   const appearance = {
     theme: "bubblegum",
@@ -110,7 +114,13 @@ async function checkStatus() {
       showMessage("Your payment is processing.");
       break;
     case "requires_payment_method":
-      showMessage("Your payment was not successful, please try again.");
+      if (paymentIntent.last_payment_error?.message) {
+        sendDataToApp({
+          status: "failed",
+          message: paymentIntent.last_payment_error?.message,
+        });
+        showMessage("Your payment was not successful, please try again.");
+      }
       break;
     default:
       showMessage("Something went wrong.");
