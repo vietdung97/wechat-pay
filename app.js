@@ -4,7 +4,7 @@
 var key =
   "pk_test_51NzzmQLk2dEcCezEqChha442FK2zSJLQhicKOMYjZRzsKrZaHLerVU7XY4dlrqrrl9qdezwlggZZu10eXv2r7oqo001Jex9Ybe";
 const stripe = Stripe(key, {
-  apiVersion: "2023-08-16"
+  apiVersion: "2023-08-16",
 });
 
 let elements;
@@ -19,25 +19,34 @@ document
 // Fetches a payment intent and captures the client secret
 async function initialize() {
   const qs = new URLSearchParams(window.location.search);
-  const clientSecret = qs.get("clientSecret");
+  const clientSecret =
+    qs.get("clientSecret") || qs.get("payment_intent_client_secret");
   const { paymentIntent } = await stripe.retrievePaymentIntent(clientSecret);
-  document.querySelector("#button-text").innerText = `Pay now (${getCurrencySymbol(paymentIntent.currency.toUpperCase())}${(paymentIntent.amount / 100).toFixed(2)})`
+  let btnText = `Pay now (${getCurrencySymbol(
+    paymentIntent.currency.toUpperCase()
+  )}${(paymentIntent.amount / 100).toFixed(2)})`;
 
+  if (paymentIntent.status === "succeeded") {
+    btnText = "Done";
+  }
+  document.querySelector("#button-text").innerText = btnText;
+  if (paymentIntent.status === "succeeded") {
+   return;
+  }
   const appearance = {
-    theme: 'bubblegum',
-    labels: 'floating'
+    theme: "bubblegum",
+    labels: "floating",
   };
   elements = stripe.elements({ appearance, clientSecret });
-
 
   const paymentElementOptions = {
     layout: "accordion",
     terms: {
-      card: 'always',
+      card: "always",
     },
     defaultCollapsed: false,
     radios: false,
-    spacedAccordionItems: true
+    spacedAccordionItems: true,
   };
 
   const paymentElement = elements.create("payment", paymentElementOptions);
@@ -47,6 +56,15 @@ async function initialize() {
 async function handleSubmit(e) {
   e.preventDefault();
   setLoading(true);
+  const qs = new URLSearchParams(window.location.search);
+  const clientSecret =
+    qs.get("clientSecret") || qs.get("payment_intent_client_secret");
+  const { paymentIntent } = await stripe.retrievePaymentIntent(clientSecret);
+
+  if (paymentIntent.status === "succeeded") {
+    sendDataToApp({ status: "succeeded", message: "Payment succeeded!" });
+    return;
+  }
 
   const { error } = await stripe.confirmPayment({
     elements,
@@ -66,9 +84,7 @@ async function handleSubmit(e) {
     return;
   }
   if (error.type) {
-    if (window.ReactNativeWebView) {
-      window.ReactNativeWebView?.postMessage(JSON.stringify(error));
-    }
+    sendDataToApp({ status: "failed", message: error.message });
     showMessage(error.message);
   }
 
@@ -132,41 +148,47 @@ function setLoading(isLoading) {
 
 function getCurrencySymbol(currencyCode) {
   switch (currencyCode.toUpperCase()) {
-    case 'CNY':
-      return '¥'; // yuan
-    case 'USD':
-      return '$'; // dollar
-    case 'EUR':
-      return '€'; // euro
-    case 'GBP':
-      return '£'; // pound sterling
-    case 'JPY':
-      return '¥'; // yen
-    case 'CHF':
-      return 'SFr'; // Swiss franc
+    case "CNY":
+      return "¥"; // yuan
+    case "USD":
+      return "$"; // dollar
+    case "EUR":
+      return "€"; // euro
+    case "GBP":
+      return "£"; // pound sterling
+    case "JPY":
+      return "¥"; // yen
+    case "CHF":
+      return "SFr"; // Swiss franc
     // case 'CAD':
     //   return '$'; // Canadian dollar
     // case 'AUD':
     //   return '$'; // Australian dollar
     // case 'NZD':
     //   return '$'; // New Zealand dollar
-    case 'INR':
-      return '₹'; // Indian rupee
-    case 'RUB':
-      return '₽'; // Russian ruble
-    case 'KRW':
-      return '₩'; // South Korean won
-    case 'TRY':
-      return '₺'; // Turkish lira
-    case 'THB':
-      return '฿'; // Thai baht
+    case "INR":
+      return "₹"; // Indian rupee
+    case "RUB":
+      return "₽"; // Russian ruble
+    case "KRW":
+      return "₩"; // South Korean won
+    case "TRY":
+      return "₺"; // Turkish lira
+    case "THB":
+      return "฿"; // Thai baht
     // case 'SGD':
     //   return '$'; // Singapore dollar
-    case 'HKD':
-      return 'HK$'; // Hong Kong dollar
-    case 'MYR':
-      return 'RM'; // Malaysian ringgit
+    case "HKD":
+      return "HK$"; // Hong Kong dollar
+    case "MYR":
+      return "RM"; // Malaysian ringgit
     default:
       return currencyCode.toUpperCase(); // if no match, return the currency code itself
+  }
+}
+
+function sendDataToApp(data) {
+  if (window.ReactNativeWebView) {
+    window.ReactNativeWebView?.postMessage(JSON.stringify(data));
   }
 }
