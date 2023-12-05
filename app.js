@@ -25,7 +25,6 @@ async function initialize() {
     return;
   }
   const { paymentIntent } = await stripe.retrievePaymentIntent(clientSecret);
-  alert(JSON.stringify(paymentIntent.status));
   //requires_action
   if (paymentIntent.status === "requires_action") {
     initialize();
@@ -40,13 +39,11 @@ async function initialize() {
       status: "failed",
       message: paymentIntent.last_payment_error?.message,
     });
-    showMessage("Your payment was not successful, please try again.");
     return;
   }
 
   if (paymentIntent.status === "succeeded") {
     sendDataToApp({ status: "succeeded", message: "Payment succeeded!" });
-    showMessage("Payment succeeded!");
     return;
   }
 
