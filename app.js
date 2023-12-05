@@ -28,6 +28,7 @@ async function initialize() {
   //requires_action
   if (paymentIntent.status === "requires_action") {
     initialize();
+  showMessage("Your payment is processing.");
     return;
   }
   if (paymentIntent.status === "processing") {
