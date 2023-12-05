@@ -18,10 +18,10 @@ document
 
 // Fetches a payment intent and captures the client secret
 async function initialize() {
+  document.querySelector("#submit").classList.add("hidden");
   const qs = new URLSearchParams(window.location.search);
   const clientSecret = qs.get("clientSecret");
   if (!clientSecret) {
-    document.querySelector("#submit").classList.add("hidden");
     return;
   }
   const { paymentIntent } = await stripe.retrievePaymentIntent(clientSecret);
@@ -42,6 +42,7 @@ async function initialize() {
   if (paymentIntent.status === "succeeded") {
     btnText = "Done";
   }
+  document.querySelector("#submit").classList.remove("hidden");
   document.querySelector("#button-text").innerText = btnText;
 
   if (paymentIntent.status === "succeeded") {
