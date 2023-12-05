@@ -25,6 +25,7 @@ async function initialize() {
     return;
   }
   const { paymentIntent } = await stripe.retrievePaymentIntent(clientSecret);
+  alert(JSON.stringify(paymentIntent.status));
   if (paymentIntent.status === "processing") {
     initialize();
     return;

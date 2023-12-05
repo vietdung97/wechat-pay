@@ -5,6 +5,7 @@
 
 body {
   font-size: 16px;
+  font-family: Akkurat, sans-serif;
   -webkit-font-smoothing: antialiased;
   display: flex;
   justify-content: center;
@@ -37,7 +38,6 @@ form {
 /* Buttons and links */
 button {
   background: #5469d4;
-  font-family: Arial, sans-serif;
   color: #ffffff;
   border-radius: 4px;
   border: 0;
