@@ -35,6 +35,21 @@ async function initialize() {
     initialize();
     return;
   }
+  if (paymentIntent.last_payment_error?.message) {
+    sendDataToApp({
+      status: "failed",
+      message: paymentIntent.last_payment_error?.message,
+    });
+    showMessage("Your payment was not successful, please try again.");
+    return;
+  }
+
+  if (paymentIntent.status === "succeeded") {
+    sendDataToApp({ status: "succeeded", message: "Payment succeeded!" });
+    showMessage("Payment succeeded!");
+    return;
+  }
+
   let btnText = `Pay now (${getCurrencySymbol(
     paymentIntent.currency.toUpperCase()
   )}${(paymentIntent.amount / 100).toFixed(2)})`;
@@ -44,10 +59,6 @@ async function initialize() {
   }
   document.querySelector("#submit").classList.remove("hidden");
   document.querySelector("#button-text").innerText = btnText;
-
-  if (paymentIntent.status === "succeeded") {
-    return;
-  }
 
   const appearance = {
     theme: "bubblegum",
