@@ -25,6 +25,10 @@ async function initialize() {
     return;
   }
   const { paymentIntent } = await stripe.retrievePaymentIntent(clientSecret);
+  if (paymentIntent.status === "processing") {
+    initialize();
+    return;
+  }
   let btnText = `Pay now (${getCurrencySymbol(
     paymentIntent.currency.toUpperCase()
   )}${(paymentIntent.amount / 100).toFixed(2)})`;
@@ -37,6 +41,7 @@ async function initialize() {
   if (paymentIntent.status === "succeeded") {
     return;
   }
+
   const appearance = {
     theme: "bubblegum",
     labels: "floating",
