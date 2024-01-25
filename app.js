@@ -2,7 +2,7 @@
 // Don’t submit any personally identifiable information in requests made with this key.
 // Sign in to see your own test API key embedded in code samples.
 var key =
-  "pk_test_51NzzmQLk2dEcCezEqChha442FK2zSJLQhicKOMYjZRzsKrZaHLerVU7XY4dlrqrrl9qdezwlggZZu10eXv2r7oqo001Jex9Ybe";
+  "pk_test_51OSAbmKnhKwUZYA50YMVe3FkOeEi8ytccZ0ej1kJdV3YC4tw1fu1OyIPV4Q8ZqIHHjhCCWKD2g7pUTC56kNI7Ej900U2Y3DJlk";
 const stripe = Stripe(key, {
   apiVersion: "2023-08-16",
 });
